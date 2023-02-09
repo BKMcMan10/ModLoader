@@ -9,9 +9,9 @@ public class ModType
     public List<string> defaultTypes = new List<string>();
     public List<string> classTypes = new List<string>();
 
-    ModStringParser parser = new ModStringParser();
-    ModError error = new ModError();
-    ModDefinedVariables variables = new ModDefinedVariables();
+    ModStringParser parser = ModManager.parser;
+    ModError error = ModManager.errors;
+    ModDefinedVariables variables = ModManager.variables;
 
     public void Init()
     {
@@ -53,6 +53,19 @@ public class ModType
 
     public void Register(string[] file)
     {
+        for (int f = 0; f < defaultTypes.Count; f++)
+        {
+            string[] subdividedFile = parser.GetWords(file);
 
+            if (parser.HasWord(subdividedFile, defaultTypes[f]) && parser.HasWord(file, subdividedFile[f + 1]))
+            {
+                variables.definedVariables.Add(subdividedFile[f + 1]);
+            }
+
+            if (parser.HasWord(subdividedFile, classTypes[f]) && parser.HasWord(file, subdividedFile[f + 1]))
+            {
+                variables.definedVariables.Add(subdividedFile[f + 1]);
+            }
+        }
     }
 }
